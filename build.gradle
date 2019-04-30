@@ -1,0 +1,53 @@
+apply from: 'dependency.gradle'
+
+group 'javacv'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+buildDir = 'out/build'
+
+repositories {
+    mavenLocal()
+
+    def aliYun = "http://maven.aliyun.com/nexus/content/groups/public/"
+    def abroad = "http://central.maven.org/maven2/"
+    maven {
+        url = abroad
+        artifactUrls aliYun
+    }
+    jcenter()
+}
+
+javadoc {
+    options.charSet = 'utf8'
+    options.encoding = 'utf8'
+    options.docEncoding = 'utf8'
+    options.memberLevel = JavadocMemberLevel.PRIVATE
+}
+
+task createDefaultProjectCategory {
+    sourceSets*.java.srcDirs*.each { it.mkdirs() }
+    sourceSets*.resources.srcDirs*.each { it.mkdirs()}
+}
+
+dependencies {
+
+    compile group: 'org.bytedeco', name: 'javacv', version: '1.5'
+    compile group: 'org.bytedeco', name: 'javacv-platform', version: '1.5'
+
+
+    annotationProcessor libs['lombok']
+    compileOnly libs['lombok']
+
+    implementation libs['logback-classic']
+
+    testAnnotationProcessor libs['lombok']
+    testCompileOnly libs['lombok']
+}
