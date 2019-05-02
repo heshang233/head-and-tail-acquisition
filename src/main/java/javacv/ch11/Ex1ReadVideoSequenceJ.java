@@ -1,11 +1,11 @@
 package javacv.ch11;
 
-import org.bytedeco.javacv.CanvasFrame;
-import org.bytedeco.javacv.FFmpegFrameGrabber;
-import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.FrameGrabber;
+import org.bytedeco.javacv.*;
+import org.bytedeco.opencv.opencv_core.Mat;
 
 import javax.swing.*;
+
+import static javacv.Helper.show;
 
 /**
  * @author huangsy
@@ -15,7 +15,8 @@ public class Ex1ReadVideoSequenceJ {
 
     public static void main(String[] args) throws FrameGrabber.Exception, InterruptedException {
 
-        FFmpegFrameGrabber grabber = new FFmpegFrameGrabber("data/bike.avi");
+        String host = "F:\\迅雷下载\\神秘博士.Doctor.Who.2005.S10E08.中英字幕.BD-HR.AAC.720p.x264-人人影视.mp4";
+        FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(host);
         // Open video video file
         grabber.start();
 
@@ -25,13 +26,20 @@ public class Ex1ReadVideoSequenceJ {
         // Exit the example when the canvas frame is closed
         canvasFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        long delay = Math.round(1000d / grabber.getFrameRate());
+        long delay = Math.round(200d / grabber.getFrameRate());
 
         // Read frame by frame, stop early if the display window is closed
+        OpenCVFrameConverter.ToMat openCVConverter = new OpenCVFrameConverter.ToMat();
         Frame frame;
         while ((frame = grabber.grab()) != null && canvasFrame.isVisible()) {
             // Capture and show the frame
-            canvasFrame.showImage(frame);
+            if (frame.timestamp == 0){
+                System.out.println(frame.keyFrame);
+                Mat convert = openCVConverter.convert(frame);
+                show(convert, "zero");
+                System.out.println(frame.timestamp);
+//                canvasFrame.showImage(frame);
+            }
             // Delay
             Thread.sleep(delay);
         }

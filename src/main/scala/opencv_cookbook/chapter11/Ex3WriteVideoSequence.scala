@@ -52,7 +52,7 @@ object Ex3WriteVideoSequence extends App {
   val codec = 13 // XVID MPEG-4
 
   // Indicate file name and coded to use to write video
-  val outputFile = new File("bikeOut.avi")
+  val outputFile = new File("data/bikeOut.avi")
   println("Processing video file: " + outputFile.getCanonicalPath)
   processor.setOutput(outputFile.getCanonicalPath, codec = codec)
 

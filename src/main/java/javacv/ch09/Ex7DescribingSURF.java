@@ -27,8 +27,8 @@ public class Ex7DescribingSURF {
     public static void main(String[] args) throws IOException {
         // Read input image
         Mat[] images = new Mat[]{
-                load(new File("data/church01.jpg")),
-                load(new File("data/church02.jpg"))
+                load(new File("data/s6.png")),
+                load(new File("data/s7.png"))
         };
 
         // Setup SURF feature detector and descriptor.
