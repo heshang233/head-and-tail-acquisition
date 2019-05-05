@@ -1,38 +1,18 @@
 package cn.huangsy.video;
 
 import javacv.ch04.ImageComparator;
-import org.bytedeco.ffmpeg.avcodec.AVCodec;
-import org.bytedeco.ffmpeg.avcodec.AVCodecContext;
-import org.bytedeco.ffmpeg.avcodec.AVPacket;
-import org.bytedeco.ffmpeg.avcodec.AVPicture;
-import org.bytedeco.ffmpeg.avformat.AVFormatContext;
-import org.bytedeco.ffmpeg.avformat.AVStream;
-import org.bytedeco.ffmpeg.avutil.AVDictionary;
-import org.bytedeco.ffmpeg.avutil.AVFrame;
-import org.bytedeco.ffmpeg.swscale.SwsContext;
-import org.bytedeco.javacpp.BytePointer;
-import org.bytedeco.javacpp.DoublePointer;
-import org.bytedeco.javacpp.PointerPointer;
-import org.bytedeco.javacv.*;
+import org.bytedeco.javacv.CanvasFrame;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.opencv.opencv_core.Mat;
-import org.opencv.highgui.HighGui;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 import static javacv.Helper.load;
 import static javacv.Helper.show;
-import static org.bytedeco.ffmpeg.global.avcodec.*;
-import static org.bytedeco.ffmpeg.global.avcodec.av_free_packet;
-import static org.bytedeco.ffmpeg.global.avcodec.avcodec_close;
-import static org.bytedeco.ffmpeg.global.avformat.*;
-import static org.bytedeco.ffmpeg.global.avutil.*;
-import static org.bytedeco.ffmpeg.global.avutil.av_free;
-import static org.bytedeco.ffmpeg.global.swscale.*;
 import static org.bytedeco.opencv.global.opencv_imgcodecs.IMREAD_COLOR;
 
 /**
@@ -48,17 +28,24 @@ public class Test {
     public static String videoFramesPath = "F:/home";
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        File referenceImageFile = new File("data/s7.png");
+        File referenceImageFile = new File("data/s5.png");
         // Load reference image
         Mat reference = load(referenceImageFile, IMREAD_COLOR);
         // Setup comparator
         ImageComparator comparator = new ImageComparator(reference);
         show(reference, "reference");
 
-        String host = "F:\\迅雷下载\\神秘博士.Doctor.Who.2005.S10E08.中英字幕.BD-HR.AAC.720p.x264-人人影视.mp4";
+        String host = "data/bike.avi";
         FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(host);
         // Open video video file
         grabber.start();
+        int fps = grabber.getLengthInFrames();
+//            System.out.println(fFmpegFrameGrabber.grabKeyFrame());
+        System.out.println("时长 " + fps / grabber.getFrameRate());
+        //根据帧数跳转
+//        grabber.setFrameNumber(34);
+        //根据时间跳转
+        grabber.setAudioTimestamp(2400000);
 
         // Prepare window to display frames
         CanvasFrame canvasFrame = new CanvasFrame("Extracted Frame", 1);
@@ -76,14 +63,15 @@ public class Test {
         while ((frame = grabber.grab()) != null ) {
             // Capture and show the frame
             canvasFrame.showImage(frame);
+            System.out.println("time:"+grabber.getTimestamp());
             if ( frame.image != null ){
                 Mat convert = openCVConverter.convert(frame);
                 int imageSize = convert.cols() * convert.rows();
                 // Compute histogram match and normalize by image size.
                 // 1 means perfect match.
                 double score = comparator.compare(convert) / imageSize;
-                System.out.println("score:"+score+", time:"+frame.timestamp);
-                if (score>0.94){
+                System.out.println("score:"+score+", time:"+frame.timestamp/1000000);
+                if (score>0.99){
                     String desc = String.format("compare , score: %6.4f", score);
                     show(convert, desc);
                 }
