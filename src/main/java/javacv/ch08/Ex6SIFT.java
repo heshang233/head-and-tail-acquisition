@@ -22,7 +22,7 @@ import static org.bytedeco.opencv.global.opencv_features2d.drawKeypoints;
  */
 public class Ex6SIFT {
     public static void main(String[] args) throws IOException {
-        Mat image = load(new File("data/s1.png"));
+        Mat image = load(new File("data/s7.png"));
         // Detect SIFT features.
         KeyPointVector keyPoints = new KeyPointVector();
         int nFeatures = 0;
