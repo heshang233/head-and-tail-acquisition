@@ -1,6 +1,8 @@
 package cn.huangsy.video;
 
 import cn.huangsy.algorithm.MeanHash;
+import cn.huangsy.algorithm.PSNR;
+import cn.huangsy.algorithm.SSIM;
 import javacv.ch04.ImageComparator;
 import org.bytedeco.javacv.CanvasFrame;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
@@ -24,13 +26,13 @@ public class Test {
 
     public static final String M4S = "http://10.0.224.243/live_record/liangc_test_2019_04_17_1_400_444x444_422/playlist.m3u8";
     public static final String TS = "http://10.0.224.19/vod/wwy___3_wmv_4000309_200000_320x240_1734/vod.m3u8";
-    public static final String VIDEO = "D:\\BaiduNetdiskDownload\\S02E04.mp4";
+    public static final String VIDEO = "D:\\BaiduNetdiskDownload\\STKF_ChangYouZhongGuo_018_BRC-150824.ts";
 
     //视频帧图片存储路径
     public static String videoFramesPath = "F:/home";
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        File referenceImageFile = new File("data/s9.png");
+        File referenceImageFile = new File("data/test1.jpg");
         // Load reference image
         Mat reference = load(referenceImageFile, IMREAD_COLOR);
         // Setup comparator
@@ -61,39 +63,72 @@ public class Test {
 
         // Read frame by frame, stop early if the display window is closed
         OpenCVFrameConverter.ToMat openCVConverter = new OpenCVFrameConverter.ToMat();
-        Frame frame;
-        while ((frame = grabber.grab()) != null ) {
-            // Capture and show the frame
-            canvasFrame.showImage(frame);
-            if ( frame.image != null ){
+//        Frame frame;
+//        while ((frame = grabber.grab()) != null ) {
+//            // Capture and show the frame
+//            canvasFrame.showImage(frame);
+//            if ( frame.image != null ){
+//
+//                Mat convert = openCVConverter.convert(frame);
+//                int imageSize = convert.cols() * convert.rows();
+//                // Compute histogram match and normalize by image size.
+//                // 1 means perfect match.
+//                int iDiffNum = MeanHash.hashCompare(convert, reference);
+//                if (iDiffNum <= 1){
+//                    String desc = String.format("compare , iDiffNum: %s", iDiffNum);
+//                    show(convert, desc);
+//                }
+////                double score = comparator.compare(convert) / imageSize;
+////                System.out.println("score:"+score+", time:"+frame.timestamp/1000000);
+////                if (score>0.99){
+////                    String desc = String.format("compare , score: %6.4f", score);
+////                    show(convert, desc);
+////                }
+////                if (frame.keyFrame){
+////
+////                    System.out.println("key frame:"+frame.keyFrame);
+////                    System.out.println("time:"+grabber.getTimestamp());
+////                    show(convert, "key frame");
+////                }
+//            }
+//
+//
+//            // Delay
+////            Thread.sleep(delay);
+//        }
 
+        Frame frame;
+        Mat res = null;
+        String ss = null;
+        double s = 0d;
+//        while ((frame = grabber.grab()) != null ) {
+        while ((frame = grabber.grab()) != null &&frame.timestamp/1000000<60) {
+            // Capture and show the frame
+//            canvasFrame.showImage(frame);
+//            System.out.println("time:"+grabber.getTimestamp());
+            if ( frame.image != null ){
                 Mat convert = openCVConverter.convert(frame);
                 int imageSize = convert.cols() * convert.rows();
                 // Compute histogram match and normalize by image size.
                 // 1 means perfect match.
-                int iDiffNum = MeanHash.hashCompare(convert, reference);
-                if (iDiffNum <= 10){
-                    String desc = String.format("compare , iDiffNum: %s", iDiffNum);
-                    show(convert, desc);
-                }
-//                double score = comparator.compare(convert) / imageSize;
-//                System.out.println("score:"+score+", time:"+frame.timestamp/1000000);
-//                if (score>0.99){
-//                    String desc = String.format("compare , score: %6.4f", score);
+                double score = SSIM.getMSSIM(convert,reference).get();
+                System.out.println("score:"+score+", time:"+frame.timestamp/1000000);
+                if(score>s){
+                    String desc = String.format("compare , score: %6.4f , time %s", score,frame.timestamp/1000000);
+                    s = score;
+                    res = convert.clone();
+                    ss = desc;
 //                    show(convert, desc);
-//                }
-//                if (frame.keyFrame){
-//
-//                    System.out.println("key frame:"+frame.keyFrame);
-//                    System.out.println("time:"+grabber.getTimestamp());
-//                    show(convert, "key frame");
-//                }
+//                    break;
+                }
+
             }
 
 
             // Delay
 //            Thread.sleep(delay);
         }
+        show(res, ss);
 
         // Close the video file
         grabber.release();

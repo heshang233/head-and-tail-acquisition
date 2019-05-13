@@ -20,12 +20,13 @@ public class Ex9ImageComparator {
 
         File[] testImageFiles = {
                 new File("data/waves.jpg"),
-                new File("data/beach.jpg"),
-                new File("data/dog.jpg"),
-                new File("data/polar.jpg"),
-                new File("data/bear.jpg"),
-                new File("data/lake.jpg"),
-                new File("data/moose.jpg")
+                new File("data/beach.jpg")
+//                ,
+//                new File("data/dog.jpg"),
+//                new File("data/polar.jpg"),
+//                new File("data/bear.jpg"),
+//                new File("data/lake.jpg"),
+//                new File("data/moose.jpg")
         };
 
         // Load reference image

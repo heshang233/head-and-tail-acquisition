@@ -41,8 +41,8 @@ import static org.bytedeco.opencv.global.opencv_imgproc.*;
 public class MeanHash {
 
     public static void main(String[] args) throws IOException {
-        Mat s1 = Helper.load(new File("data/boldt_salt.jpg"), IMREAD_COLOR);
-        Mat s2 = Helper.load(new File("data/boldt.jpg"), IMREAD_COLOR);
+        Mat s1 = Helper.load(new File("data/canal1.jpg"), IMREAD_COLOR);
+        Mat s2 = Helper.load(new File("data/canal2.jpg"), IMREAD_COLOR);
 
 
         int iDiffNum = hashCompare(s1, s2);

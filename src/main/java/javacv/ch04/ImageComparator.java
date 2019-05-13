@@ -1,5 +1,6 @@
 package javacv.ch04;
 
+import javacv.Helper;
 import org.bytedeco.opencv.opencv_core.Mat;
 
 import static org.bytedeco.opencv.global.opencv_imgproc.HISTCMP_INTERSECT;
@@ -36,6 +37,8 @@ public class ImageComparator {
      */
     public double compare(Mat image) {
         Mat inputH = hist.getHistogram(image);
+        Helper.show(inputH,"hit");
+        Helper.show(referenceHistogram,"hit");
         return compareHist(referenceHistogram, inputH, HISTCMP_INTERSECT);
     }
 }
