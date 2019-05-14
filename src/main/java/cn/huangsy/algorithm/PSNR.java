@@ -1,8 +1,6 @@
 package cn.huangsy.algorithm;
 
 import javacv.Helper;
-import org.bytedeco.opencv.global.opencv_core.*;
-import org.bytedeco.opencv.global.opencv_imgcodecs.*;
 import org.bytedeco.opencv.opencv_core.GpuMat;
 import org.bytedeco.opencv.opencv_core.Mat;
 import org.bytedeco.opencv.opencv_core.MatExpr;

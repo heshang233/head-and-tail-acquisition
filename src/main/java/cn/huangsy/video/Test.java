@@ -27,13 +27,13 @@ public class Test {
 
     public static final String M4S = "http://10.0.224.243/live_record/liangc_test_2019_04_17_1_400_444x444_422/playlist.m3u8";
     public static final String TS = "http://10.0.224.19/vod/wwy___3_wmv_4000309_200000_320x240_1734/vod.m3u8";
-    public static final String VIDEO = "D:\\BaiduNetdiskDownload\\STKF_ChangYouZhongGuo_018_BRC-150824.ts";
+    public static final String VIDEO = "data/video/STKF_ChangYouZhongGuo_018_BRC-150824.ts";
 
     //视频帧图片存储路径
     public static String videoFramesPath = "F:/home";
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        File referenceImageFile = new File("data/test1.jpg");
+        File referenceImageFile = new File("data/video/test1.jpg");
         // Load reference image
         Mat reference = load(referenceImageFile, IMREAD_COLOR);
         // Setup comparator
@@ -101,7 +101,7 @@ public class Test {
         Frame frame;
         Mat res = null;
         String ss = null;
-        double s = 0d;
+        int s = 64*64;
 //        while ((frame = grabber.grab()) != null ) {
         while ((frame = grabber.grab()) != null &&frame.timestamp/1000000<60) {
             // Capture and show the frame
@@ -112,10 +112,10 @@ public class Test {
                 int imageSize = convert.cols() * convert.rows();
                 // Compute histogram match and normalize by image size.
                 // 1 means perfect match.
-                double score = TemplateMatch.matchTemplates(convert,reference, TemplateMatch.TemplatesMatchMethod.CV_TM_CCOEFF_NORMED);
+                int score = MeanHash.hashCompare(convert,reference,8);
                 System.out.println("score:"+score+", time:"+frame.timestamp/1000000);
-                if(score>s){
-                    String desc = String.format("compare , score: %6.4f , time %s", score,frame.timestamp/1000000);
+                if(score<s){
+                    String desc = String.format("compare , score: %s , time %s", score,frame.timestamp/1000000);
                     s = score;
                     res = convert.clone();
                     ss = desc;

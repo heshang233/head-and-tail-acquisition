@@ -45,7 +45,7 @@ public class MeanHash {
         Mat s2 = Helper.load(new File("data/canal2.jpg"), IMREAD_COLOR);
 
 
-        int iDiffNum = hashCompare(s1, s2);
+        int iDiffNum = hashCompare(s1, s2, 1);
 
         if (iDiffNum <= 5){
             System.out.println("two images are very similar! ");
@@ -57,12 +57,12 @@ public class MeanHash {
 
     }
 
-    public static int hashCompare(Mat s1, Mat s2) {
+    public static int hashCompare(Mat s1, Mat s2, int product) {
         Mat matDst1 = new Mat();
         Mat matDst2 = new Mat();
 
-        resize(s1, matDst1, new Size(8, 8), 0, 0, INTER_CUBIC);
-        resize(s2, matDst2, new Size(8, 8), 0, 0, INTER_CUBIC);
+        resize(s1, matDst1, new Size(8 * product, 8 * product), 0, 0, INTER_CUBIC);
+        resize(s2, matDst2, new Size(8 * product, 8 * product), 0, 0, INTER_CUBIC);
 
         Mat temp1 = matDst1;
         Mat temp2 = matDst2;
@@ -71,29 +71,29 @@ public class MeanHash {
         cvtColor(temp2 , matDst2, CV_BGR2GRAY);
 
         int iAvg1 = 0, iAvg2 = 0;
-        int arr1[] = new int[64], arr2[] = new int[64];
+        int arr1[] = new int[8 * product * 8 * product], arr2[] = new int[8 * product * 8 * product];
 
-        for (int i = 0; i < 8; i++){
+        for (int i = 0; i < 8 * product; i++){
             BytePointer ptr1 = matDst1.ptr(i);
             BytePointer ptr2 = matDst2.ptr(i);
-            int tmp = i * 8;
+            int tmp = i * 8 * product;
 
-            for (int j = 0; j < 8; j++)
+            for (int j = 0; j < 8 * product; j++)
             {
                 int tmp1 = tmp + j;
 
-                arr1[tmp1] = ptr1.get(j) / 4 * 4;
-                arr2[tmp1] = ptr2.get(j) / 4 * 4;
+                arr1[tmp1] = ptr1.get(j) / (4* product) * (4* product);
+                arr2[tmp1] = ptr2.get(j) / (4* product) * (4* product);
 
                 iAvg1 += arr1[tmp1];
                 iAvg2 += arr2[tmp1];
             }
         }
 
-        iAvg1 /= 64;
-        iAvg2 /= 64;
+        iAvg1 /= 8 * product * 8 * product;
+        iAvg2 /= 8 * product * 8 * product;
 
-        for (int i = 0; i < 64; i++)
+        for (int i = 0; i < 8 * product * 8 * product; i++)
         {
             arr1[i] = (arr1[i] >= iAvg1) ? 1 : 0;
             arr2[i] = (arr2[i] >= iAvg2) ? 1 : 0;
@@ -101,12 +101,11 @@ public class MeanHash {
 
         int iDiffNum = 0;
 
-        for (int i = 0; i < 64; i++){
+        for (int i = 0; i < 8 * product * 8 * product; i++){
             if (arr1[i] != arr2[i]){
                 ++iDiffNum;
             }
         }
-        System.out.println("iDiffNum = "+ iDiffNum);
 
         return iDiffNum;
     }
