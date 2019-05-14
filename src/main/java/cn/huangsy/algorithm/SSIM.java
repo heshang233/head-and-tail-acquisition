@@ -19,10 +19,10 @@ import static org.bytedeco.opencv.global.opencv_imgproc.GaussianBlur;
 public class SSIM {
 
     public static void main(String[] args) throws IOException {
-        Mat s1 = Helper.load(new File("data/00271.jpg"), IMREAD_COLOR);
-        Mat s2 = Helper.load(new File("data/00272.jpg"), IMREAD_COLOR);
+        Mat s1 = Helper.load(new File("data/00272.jpg"), IMREAD_COLOR);
+        Mat s2 = Helper.load(new File("data/00271.jpg"), IMREAD_COLOR);
 
-        Scalar mssim = getMSSIM(s1, s2);
+        Scalar mssim = getMSSIM(s1, s2);// 区间-1~1之间， 1表示完美匹配。
         System.out.println(mssim.get());
     }
 

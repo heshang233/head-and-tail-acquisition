@@ -25,7 +25,7 @@ public class PSNR {
         Mat s1 = Helper.load(new File("data/00271.jpg"), IMREAD_COLOR);
         Mat s2 = Helper.load(new File("data/00272.jpg"), IMREAD_COLOR);
 
-        double psnr = getPSNR(s1, s2);
+        double psnr = getPSNR(s1, s2); // 区间30-50之间，则为相似。低于30一下则匹配越差
         System.out.println(psnr);
 
         // 目前打出来的opencv包不支持GPU

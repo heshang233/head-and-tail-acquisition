@@ -3,6 +3,7 @@ package cn.huangsy.video;
 import cn.huangsy.algorithm.MeanHash;
 import cn.huangsy.algorithm.PSNR;
 import cn.huangsy.algorithm.SSIM;
+import cn.huangsy.algorithm.TemplateMatch;
 import javacv.ch04.ImageComparator;
 import org.bytedeco.javacv.CanvasFrame;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
@@ -111,7 +112,7 @@ public class Test {
                 int imageSize = convert.cols() * convert.rows();
                 // Compute histogram match and normalize by image size.
                 // 1 means perfect match.
-                double score = SSIM.getMSSIM(convert,reference).get();
+                double score = TemplateMatch.matchTemplates(convert,reference, TemplateMatch.TemplatesMatchMethod.CV_TM_CCOEFF_NORMED);
                 System.out.println("score:"+score+", time:"+frame.timestamp/1000000);
                 if(score>s){
                     String desc = String.format("compare , score: %6.4f , time %s", score,frame.timestamp/1000000);
